@@ -40,10 +40,10 @@ function convert_dir_to_webp
                     set reduction_pct (math --scale=1 "100 * ($original_size - $new_size) / $original_size")
                     
                     if test "$new_size" -lt "$original_size"
-                        # 새 파일이 더 작으면 _temp 없는 이름으로 변경하고 원본 삭제
+                        # 새 파일이 더 작으면 원본을 먼저 삭제하고 _temp 없는 이름으로 변경
+                        rm "$file"
                         set final_name "$basename.webp"
                         mv "$output_file" "$final_name"
-                        rm "$file"
                         echo "성공: $file -> $final_name (크기: $original_size -> $new_size bytes, $reduction_pct% 감소)"
                     else
                         # 새 파일이 더 크거나 같으면 새 파일 삭제하고 원본 유지
@@ -51,8 +51,8 @@ function convert_dir_to_webp
                         echo "건너뜀: $file (새 파일 크기가 더 큼: $original_size -> $new_size bytes)"
                     end
                 else
-                    echo "성공 (크기 확인 불가): $file -> $output_file"
-                    # 크기 확인 불가 시 원본 유지
+                    echo "경고: $file (크기 확인 불가)"
+                    # 크기 확인 불가 시 원본 유지하고 임시 파일 삭제
                     rm "$output_file"
                 end
             else
